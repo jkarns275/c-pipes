@@ -1,4 +1,6 @@
-/*int * fuck = {
+/*
+  Mapping for the obfuscated version - still probably completely illegible even with this
+  int * f = {
   [0] = charset,
   [1] = nPipes,
   [2] = colorMode,

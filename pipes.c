@@ -9,8 +9,8 @@
 #define movecursor(x, y) printf("\033[%d;%dH", (y), (x))
 #define printcoloredstr(ch, color) printf("\033[%dm%s", color, ch)
 #define randbool() (rand()&1)
-#define ROWS 20
-#define COLS 80
+int ROWS = 20;
+int COLS = 80;
 
 #define WHITE 37
 #define CYAN 36
@@ -153,6 +153,22 @@ void handleArgs(int argc, char** args) {
         if (nPipes < 1) nPipes = 1;
       } else {
         printf("Usage: -n [number of pipes]");
+        exit(0);
+      }
+    } else if (strcmp("-h", args[i]) == 0 | strcmp("-H", args[i]) == 0) {
+      if (i + 1 < argc) {
+        ROWS = atoi(args[i + 1]);
+if (ROWS < 10 || ROWS > 200) ROWS = 20;
+      } else {
+        printf("Usage: -h [number of rows]");
+        exit(0);
+      }
+    } else if (strcmp("-W", args[i]) == 0 | strcmp("-w", args[i]) == 0) {
+      if (i + 1 < argc) {
+        COLS = atoi(args[i + 1]);
+        if (COLS < 10 || COLS > 260) COLS = 1;
+      } else {
+        printf("Usage: -w [number of heights]");
         exit(0);
       }
     }

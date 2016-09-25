@@ -166,7 +166,7 @@ if (ROWS < 10 || ROWS > 200) ROWS = 20;
     } else if (strcmp("-W", args[i]) == 0 | strcmp("-w", args[i]) == 0) {
       if (i + 1 < argc) {
         COLS = atoi(args[i + 1]);
-        if (COLS < 10 || COLS > 260) COLS = 1;
+        if (COLS < 10 || COLS > 260) COLS = 10;
       } else {
         printf("Usage: -w [number of heights]");
         exit(0);

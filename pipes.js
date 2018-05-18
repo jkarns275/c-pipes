@@ -112,7 +112,8 @@ class Pipe {
                 case R:
                     this.x += 1;
             }
-            if (this.x <= 0) {
+
+            /* if (this.x <= 0) {
                 this.x = COLS - 1;
             } else if (this.x >= COLS) {
                 this.x = 0
@@ -121,6 +122,9 @@ class Pipe {
                 this.y = ROWS - 1;
             } else if (this.y >= ROWS) {
                 this.y = 0;
+            }*/
+            if (this.x <= 0 || this.x >= COLS || this.y <= 0 || this.y >= ROWS) {
+                this.reset();
             }
 
         } 

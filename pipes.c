@@ -3,22 +3,26 @@
 #include <string.h>
 #include <time.h>
 #include <signal.h>
+#include <sys/types.h>
 #include <unistd.h>
 
 #define clearscreen() printf("\033[H\033[J")
 #define movecursor(x, y) printf("\033[%d;%dH", (y), (x))
 #define printcoloredstr(ch, color) printf("\033[%dm%s", color, ch)
 #define randbool() (rand()&1)
-int ROWS = 20;
+int ROWS = 24;
 int COLS = 80;
 
-#define WHITE 37
-#define CYAN 36
-#define MAGENTA 35
-#define BLUE 34
-#define YELLOW 33
-#define GREEN 32
-#define RED 31
+#define BACKGROUNDCOLORS 0
+
+#define WHITE 37+BACKGROUNDCOLORS
+#define CYAN 36+BACKGROUNDCOLORS
+#define MAGENTA 35+BACKGROUNDCOLORS
+#define BLUE 34+BACKGROUNDCOLORS
+#define YELLOW 33+BACKGROUNDCOLORS
+#define GREEN 32+BACKGROUNDCOLORS
+#define RED 31+BACKGROUNDCOLORS
+
 
 
 /*
@@ -57,7 +61,7 @@ void resetPipe(Pipe* p) {
       p->y = 0;
       p->direction = D;
     } else {
-      p->y = ROWS - 3;
+      p->y = ROWS;
       p->direction = U;
     }
     p->x = rand() % (COLS-1);
@@ -66,7 +70,7 @@ void resetPipe(Pipe* p) {
       p->x = 0;
       p->direction = R;
     } else {
-      p->x = COLS - 2;
+      p->x = COLS;
       p->direction = L;
     }
     p->y = rand() % (ROWS-1);
@@ -182,25 +186,36 @@ int main(int argc, char** args) {
 
   void handle(int signum) {
     clearscreen();
+    printcoloredstr("\n", 30);
     printf("Goodbye :)\n");
     free(pipes);
     exit(0);
   }
 
-  srand(time(NULL));
+  pid_t pid = fork();
 
-  signal(SIGINT, handle);
-  struct timespec t1, t2;
-  t1.tv_sec = 0;
-  t1.tv_nsec = 150 * 200000; // 50 Milliseconds
-  clearscreen();
-  while (1) {
-    for (int i = 0 ; i < nPipes ; i++) updatePipe(&pipes[i]);
-    nanosleep(&t1, &t2);
-    //movecursor(0, 0);
-    //printf("x: %d ; y: %d ; track: %d", pipes[0].x, pipes[0].y, pipes[0].track);
-    fflush(stdout);
+  if (pid) {
+    char _unused;
+    scanf("%c", &_unused);
+    free(pipes);
+    kill(pid, SIGKILL);
+    handle(0);
+  } else {
+    srand(time(NULL));
+
+    signal(SIGINT, handle);
+    struct timespec t1, t2;
+    t1.tv_sec = 0;
+    t1.tv_nsec = 1000000000 / 20; // 50 Milliseconds
+    clearscreen();
+    while (1) {
+      for (int i = 0 ; i < nPipes ; i++) {
+          updatePipe(&pipes[i]);
+      }
+      fflush(stdout);
+      nanosleep(&t1, &t2);
+      //movecursor(0, 0);
+      //printf("x: %d ; y: %d ; track: %d", pipes[0].x, pipes[0].y, pipes[0].track);
+    }
   }
-
-  free(pipes);
 }

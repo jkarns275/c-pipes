@@ -3,3 +3,5 @@ all:
 run:
 	gcc -o pipes pipes.c
 	./pipes
+install:
+	cp pipes ~/.local/bin/pipes
